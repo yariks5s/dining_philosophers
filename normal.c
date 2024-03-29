@@ -131,3 +131,14 @@ int main()
 
     return 0;
 }
+
+// Deadlock avoidance of the Chandy-Misra algorithm can be proven using directed graphs: each philosopher represents a vertex, and each edge represents a chopstick, with an arrow going from "dirty towards clean".
+// The ID ordering of philosophers can be used to show that this graph never has a closed cycles (i.e., deadlock circular waits), by reassigning a (lower) ID to philosophers just after they finish eating, thus insuring that the graph's arrows always point from lower towards higher IDs.
+
+// No starvation: Since a hungry philosopher p always keeps p's clean chopsticks, and since each of p's neighbors must deliver their shared chopstick to p, cleaned, either immediately (if the neighbor is thinking) or as soon as that neighbor finishes eating,
+// then we conclude that a hungry philosopher p cannot be passed up more than once by any neighbor. By transitivity, each of p's hungry or eating neighbors must eventually finish eating, which guarantees that p won't starve. (But p may have to fast for a long time.)
+
+// Fairness (after eating, all resources are designated for the neighbors); high degree of concurrency; scalable (because after initialization; the resource management is local -- no central authority needed);
+// generalizes to any number of processes and resources (as long as each resource is shared by exactly two processes).
+
+// Downside: potentially long wait chains when hungry.
