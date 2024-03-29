@@ -110,7 +110,6 @@ public:
     {
         print("Philosopher ", name, " is trying to dine.\n");
 
-        // Wait random time for left fork
         std::unique_lock<std::mutex> lf(leftFork.mutex);
         bool tookLeftFork = leftFork.cv.wait_for(lf, std::chrono::milliseconds(1000), [this] { return !leftFork.isTaken; });
         if (!tookLeftFork)
@@ -121,7 +120,6 @@ public:
 
         leftFork.takeFork();
 
-        // wait random time for right fork
         std::unique_lock<std::mutex> rf(rightFork.mutex);
         bool tookRightFork = rightFork.cv.wait_for(rf, std::chrono::milliseconds(1000), [this] { return !rightFork.isTaken; });
         if (!tookRightFork)
@@ -136,7 +134,7 @@ public:
         rightFork.takeFork();
 
         print("Philosopher ", name, " is dining.\n");
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Time for dining
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         // Return forks back
         rightFork.putFork();

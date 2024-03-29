@@ -102,34 +102,28 @@ public:
     }
 
     void dine() {
-        // Визначення номерів лівої та правої виделок для філософа
         std::size_t leftForkIndex = name - 1;
         std::size_t rightForkIndex = name % num_philosophers;
 
-        // Визначення порядку взяття виделок
         std::size_t firstFork = std::min(leftForkIndex, rightForkIndex);
         std::size_t secondFork = std::max(leftForkIndex, rightForkIndex);
 
         Fork& firstForkRef = (firstFork == leftForkIndex) ? leftFork : rightFork;
         Fork& secondForkRef = (secondFork == rightForkIndex) ? rightFork : leftFork;
 
-        // Блокування першої виделки
         std::unique_lock<std::mutex> lockFirstFork(firstForkRef.mutex);
         while (firstForkRef.isTaken)
             firstForkRef.cv.wait(lockFirstFork);
         firstForkRef.takeFork();
 
-        // Блокування другої виделки
         std::unique_lock<std::mutex> lockSecondFork(secondForkRef.mutex);
         while (secondForkRef.isTaken)
             secondForkRef.cv.wait(lockSecondFork);
         secondForkRef.takeFork();
 
-        // Симуляція їжі
         print("Philosopher ", name, " is dining.\n");
         std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Час на обід
 
-        // Повернення виделок
         firstForkRef.putFork();
         lockFirstFork.unlock();
         firstForkRef.cv.notify_one();
